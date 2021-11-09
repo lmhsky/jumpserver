@@ -47,7 +47,7 @@ def is_absolute_uri(uri):
     if not isinstance(uri, str):
         return False
 
-    result = re.match(r'^http[s]?://.*', uri)
+    relt = re.match(r'^http[s]?://.*', uri)
     if result is None:
         return False
 
@@ -350,6 +350,10 @@ class Config(dict):
         'OPERATE_LOG_KEEP_DAYS': 200,
         'FTP_LOG_KEEP_DAYS': 200,
         'CLOUD_SYNC_TASK_EXECUTION_KEEP_DAYS': 30,
+
+        # vault相关
+        'VAULT_URL': 'http://127.0.0.1:8200',
+        'VAULT_TOKEN': 's.JqVYFWIrtPzctcePjaWTtxXf',
 
         # 废弃的
         'DEFAULT_ORG_SHOW_ALL_USERS': True,
