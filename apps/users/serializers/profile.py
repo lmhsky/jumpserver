@@ -53,6 +53,27 @@ class UserUpdatePasswordSerializer(serializers.ModelSerializer):
         return instance
 
 
+class UserUpdateZipPasswordSerializer(serializers.ModelSerializer):
+    new_zip_pwd = serializers.CharField(required=True, max_length=128, write_only=True)
+    new_zip_pwd_again = serializers.CharField(required=True, max_length=128, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['new_zip_pwd', 'new_zip_pwd_again']
+
+    def validate_new_zip_pwd_again(self, value):
+        if value != self.initial_data.get('new_zip_pwd', ''):
+            msg = _('The newly set password is inconsistent')
+            raise serializers.ValidationError(msg)
+        return value
+
+    def update(self, instance, validated_data):
+        new_zip_pwd = self.validated_data.get('new_zip_pwd')
+        instance.zip_pwd = new_zip_pwd
+        instance.save()
+        return instance
+
+
 class UserUpdatePublicKeySerializer(serializers.ModelSerializer):
     public_key_comment = serializers.CharField(
         source='get_public_key_comment', required=False, read_only=True, max_length=128
@@ -165,7 +186,6 @@ class UserPKUpdateSerializer(serializers.ModelSerializer):
 
 
 class ChangeUserPasswordSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ['password']
